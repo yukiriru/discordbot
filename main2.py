@@ -32,9 +32,7 @@ class MyClient(discord.Client):
     def get_time(self):
         return datetime.today().strftime("%H시 %M분 %S초")
 
-    def get_calendar(self):
-        my_calendar = calendar.Calendar()
-
+    
 
     def get_answer(self, ttext):
 
