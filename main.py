@@ -52,15 +52,16 @@ class MyClient(discord.Client):
         answer_dict = {
             '시간': ':clock8: 현재 시간은 {}입니다.'.format(self.get_time()),
         }
-        return ttext
-        '''
+
+
         if not ttext:
             return "빈 문자열입니다."
 
         for key in answer_dict.keys():
             if any(word in ttext for word in key.split()):
-                return "ttext" + answer_dict[key]
-'''
+                return ' '.join(ttext) + answer_dict[key]
+        return ' '.join(ttext)
+
 
 
 
