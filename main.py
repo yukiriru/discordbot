@@ -6,10 +6,12 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from konlpy.tag import Okt
 
-#JDK error시 JDK / Jpype 설치 (KoNLPy)
 
 
+okt = Okt()
 
+with open('stopwords.txt', 'r', encoding='utf-8') as file:
+    stopwords = set([word.strip() for word in file.readlines()])
 
 class MyClient(discord.Client):
     async def on_ready(self): #실행시 봇 실행
@@ -40,18 +42,27 @@ class MyClient(discord.Client):
     def get_answer(self, text):
         ttext = word_tokenize(text) #보낸 텍스트
 
-        okt = Okt()
-
-        with open('stopwords.txt', 'r', encoding='utf-8') as file:
-            stopwords= file.readlines()
-
-        stopwords = set([word.strip() for word in stopwords])
+        if isinstance(ttext, list):
+            ttext = ' '.join(ttext)
 
         word_tokens = okt.morphs(ttext)
 
         ttext = [word for word in word_tokens if not word in stopwords]
 
-        print('불용어 제거 후 :', ttext)
+        answer_dict = {
+            '시간': ':clock8: 현재 시간은 {}입니다.'.format(self.get_time()),
+        }
+        return ttext
+        '''
+        if not ttext:
+            return "빈 문자열입니다."
+
+        for key in answer_dict.keys():
+            if any(word in ttext for word in key.split()):
+                return "ttext" + answer_dict[key]
+'''
+
+
 
 
 intents = discord.Intents.default()
