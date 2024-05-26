@@ -7,7 +7,6 @@ from nltk.tokenize import word_tokenize
 from konlpy.tag import Okt
 
 
-
 okt = Okt()
 
 with open('stopwords.txt', 'r', encoding='utf-8') as file:
@@ -59,7 +58,7 @@ class MyClient(discord.Client):
 
         for key in answer_dict.keys():
             if any(word in ttext for word in key.split()):
-                return ' '.join(ttext) + answer_dict[key]
+                return  answer_dict[key]
         return ' '.join(ttext)
 
 
