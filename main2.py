@@ -6,17 +6,8 @@ import random
 import requests
 import nltk
 from nltk.tokenize import word_tokenize
-from konlpy.tag import Okt
 import openai
 from openai import OpenAI
-
-# Initialize NLP tools
-nltk.download('punkt')
-okt = Okt()
-
-# Read stopwords from file
-with open('stopwords.txt', 'r', encoding='utf-8') as file:
-    stopwords = set([word.strip() for word in file.readlines()])
 
 # Define the Discord bot client class
 class MyClient(discord.Client):
@@ -64,28 +55,20 @@ class MyClient(discord.Client):
         return datetime.today().strftime("%H시 %M분 %S초")
 
     def get_answer(self, text):
-        ttext = word_tokenize(text)
-
-        if isinstance(ttext, list):
-            ttext = ' '.join(ttext)
-
-        word_tokens = okt.morphs(ttext)
-        ttext = [word for word in word_tokens if word not in stopwords]
-
         answer_dict = {
             '시간': ':clock8: 현재 시간은 {}입니다.'.format(self.get_time()),
         }
 
-        if not ttext:
+        if not text:
             return "빈 문자열입니다."
 
         for key in answer_dict.keys():
-            if any(word in ttext for word in key.split()):
-                return answer_dict[key]
+            if key.find(text) != -1:
+                return  answer_dict[key]
         return self.chat_with_gpt(text)
 
+
     def chat_with_gpt(self, prompt):
-        # 중요!!: 발급받은 API Key를 입력해야 함
         client = OpenAI(api_key="your openai api")
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
