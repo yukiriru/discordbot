@@ -2,10 +2,11 @@ import discord
 from datetime import datetime
 import random
 import requests
-import nltk
-from nltk.tokenize import word_tokenize
 import openai
 from openai import OpenAI
+import asyncio
+
+TOKEN = ''
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -29,12 +30,31 @@ class MyClient(discord.Client):
             2. flip - 동전을 뒤집고 결과를 보여줌
             3. 시간 - 현재 시간을 보여줌
             4. 날씨 <도시명> - 지정된 도시의 날씨를 보여줌
+            5. joke - 무작위 농담을 보여줌
+            6. quote - 무작위 명언을 보여줌
+            7. remind <시간(분)> <메시지> - 지정된 시간 후에 메시지를 보냄
             """
             await channel.send(commands)
+        elif content == 'joke':
+            joke = self.generate_joke()
+            await channel.send(joke)
+        elif content == 'quote':
+            quote = self.generate_quote()
+            await channel.send(quote)
         elif content.startswith('날씨 '):
             city = content.split(' ', 1)[1]
             weather = self.get_weather(city)
             await channel.send(weather)
+        elif content.startswith('remind '):
+            try:
+                parts = content.split(' ', 2)
+                delay = int(parts[1])
+                reminder_message = parts[2]
+                await channel.send(f"{delay}분 후에 알림을 설정했습니다: {reminder_message}")
+                await asyncio.sleep(delay * 60)
+                await channel.send(f"알림: {reminder_message} - {message.author.mention}")
+            except (IndexError, ValueError):
+                await channel.send("잘못된 형식입니다. 사용 예시: remind 10 잠에서 깨어나세요!")
         else:
             answer = self.get_answer(content)
             await channel.send(answer)
@@ -59,12 +79,11 @@ class MyClient(discord.Client):
 
         for key in answer_dict.keys():
             if key.find(text) != -1:
-                return  answer_dict[key]
+                return answer_dict[key]
         return self.chat_with_gpt(text)
 
-
     def chat_with_gpt(self, prompt):
-        client = OpenAI(api_key="your openai api")
+        client = OpenAI(api_key="your api")
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -74,6 +93,14 @@ class MyClient(discord.Client):
 
         message = response.choices[0].message.content.strip()
         return message
+
+    def generate_joke(self):
+        prompt = "농담 하나 해줘."
+        return self.chat_with_gpt(prompt)
+
+    def generate_quote(self):
+        prompt = "영감을 주는 명언 하나 해줘."
+        return self.chat_with_gpt(prompt)
 
     def get_weather(self, city):
         lat, lon = 37.5665, 126.9780  # 서울의 위도와 경도
@@ -94,6 +121,7 @@ class MyClient(discord.Client):
         else:
             error_message = response.json().get('error', '알 수 없는 오류')
             return f"날씨 정보를 가져올 수 없습니다: {response.status_code} - {error_message}"
+
 
 intents = discord.Intents.default()
 intents.message_content = True
