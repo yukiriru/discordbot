@@ -46,10 +46,7 @@ class MyClient(discord.Client):
             outcome = '앞면' if random.choice([True, False]) else '뒷면'
             await channel.send('동전 뒤집기 결과: {}'.format(outcome))
         elif content.startswith('날씨 '):
-            if ' ' in content:
-                city = content.split(' ', 1)[1]
-            else:
-                city = '서울'
+            city = content.split(' ', 1)[1]
             weather = self.get_weather(city)
             await channel.send(weather)
         elif content.startswith('remind '):
