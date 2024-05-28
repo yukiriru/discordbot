@@ -1,5 +1,3 @@
-# my_discord_bot.py
-
 import discord
 from datetime import datetime
 import random
@@ -9,19 +7,16 @@ from nltk.tokenize import word_tokenize
 import openai
 from openai import OpenAI
 
-# Define the Discord bot client class
 class MyClient(discord.Client):
     async def on_ready(self):
         print('디스코드 봇 로그인 완료')
         await self.change_presence(status=discord.Status.online, activity=discord.Game("대기중"))
 
     async def on_message(self, message):
-        if message.author == self.user:
-            return
-
         content = message.content
         channel = message.channel
-
+        if message.author == self.user:
+            return
         if content == 'ping':
             await channel.send('pong {0.author.mention}'.format(message))
         elif content == 'flip':
@@ -100,9 +95,7 @@ class MyClient(discord.Client):
             error_message = response.json().get('error', '알 수 없는 오류')
             return f"날씨 정보를 가져올 수 없습니다: {response.status_code} - {error_message}"
 
-# Initialize and run the bot
 intents = discord.Intents.default()
 intents.message_content = True
 client = MyClient(intents=intents)
-TOKEN = 'yourtoken'
 client.run(TOKEN)
