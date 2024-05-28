@@ -13,12 +13,11 @@ class MyClient(discord.Client):
         await self.change_presence(status=discord.Status.online, activity=discord.Game("대기중"))
 
     async def on_message(self, message):
-        if message.author == self.user:
-            return
-
         content = message.content
         channel = message.channel
 
+        if message.author == self.user:
+            return
         if content == 'ping':
             await channel.send('pong {0.author.mention}'.format(message))
         elif content == 'flip':
