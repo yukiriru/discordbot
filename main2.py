@@ -1,5 +1,3 @@
-# my_discord_bot.py
-
 import discord
 from datetime import datetime
 import random
@@ -7,6 +5,8 @@ import requests
 import openai
 from openai import OpenAI
 import asyncio
+
+TOKEN = ''
 
 # Discord 봇 클라이언트 클래스 정의
 class MyClient(discord.Client):
@@ -129,5 +129,4 @@ class MyClient(discord.Client):
 intents = discord.Intents.default()
 intents.message_content = True
 client = MyClient(intents=intents)
-TOKEN = 'your token'
 client.run(TOKEN)

@@ -1,4 +1,4 @@
-
+TOKEN = '<>'
 
 import discord
 from datetime import datetime
@@ -65,7 +65,6 @@ class MyClient(discord.Client):
             await channel.send(news)
         else:
             answer = self.get_answer(content)
-            await channel.send(answer)
 
     def get_day_of_week(self):
         weekday_list = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
@@ -139,13 +138,11 @@ class MyClient(discord.Client):
                 {"role": "user", "content": prompt}
             ]
         )
-
         message = response.choices[0].message.content.strip()
         return message
 
-# 봇 초기화 및 실행
+
 intents = discord.Intents.default()
 intents.message_content = True
 client = MyClient(intents=intents)
-TOKEN = 'your token'
 client.run(TOKEN)
