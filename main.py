@@ -1,5 +1,3 @@
-TOKEN = '<>'
-
 import discord
 from datetime import datetime
 import random
@@ -8,7 +6,7 @@ import openai
 from openai import OpenAI
 import asyncio
 
-
+TOKEN = '<>'
 class MyClient(discord.Client):
     async def on_ready(self):
         print('디스코드 봇 로그인 완료')
